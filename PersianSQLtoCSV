@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+#coding:utf8
+
+#Save Persian character into .scv file - utf-8
+
+import csv
+import datetime
+from decimal import Decimal
+import pymssql
+import io
+
+# Connect to MS-SQL Server
+conn = pymssql.connect(server="Server IP",
+                       user="user name",
+                       password="Password",
+                       database="DB name")
+
+# Create a database cursor
+cursor = conn.cursor()
+
+# SQL query and Execute query
+query = """SELECT * FROM tbl_name"""
+cursor.execute(query)
+
+# create and insert from SQL server into csv file
+with io.open("D:\output.csv", "a", encoding='utf-8-sig') as outfile:
+    writer = csv.writer(outfile, quoting=csv.QUOTE_NONNUMERIC)
+    writer.writerow([i[0] for i in cursor.description]) # write headers
+    for row in cursor:
+        print(row)
+        writer.writerow(row)
+
+# Close the cursor and the database connection
+cursor.close()
+conn.close()
